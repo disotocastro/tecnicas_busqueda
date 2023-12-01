@@ -36,19 +36,27 @@ begin
 end;
 
 
-// BUSQUEDA GREEDY
-// Se crea un objeto que contiene ID, peso, beneficio y calidad/precio
+
+//       ===== METODOS DE BUSQUEDA =====
+//Se crea un objeto que contiene ID, peso, beneficio y calidad/precio}
 type
   TObjeto = record
     Peso: Integer;
     Beneficio: Integer;
     CalidadPrecio: Real;
     ID: Integer;
-  end;
+end;
 
-// Implementación sencilla del algoritmo bubblesort
-// para ordenar los datos y que sea más sencillo escoger
-// el mayor indice
+{
+  ALGORITMO DE BUSQUEDA BURBUJA
+  Se implementa para ordenar el array de TObjetos, esto con el fin
+  de facilitarle al algoritmo Greedy obtener los valores de calidad/precio
+  y escogerlos de una manera más rápida.
+
+  Se escoge implementar este algoritmo porque es bueno en N pequeños y
+  su implementanción es sencilla.
+
+}
 procedure BubbleSort(var Objetos: array of TObjeto);
 var
   i, j: Integer;
@@ -65,6 +73,7 @@ begin
 end;
 
 
+// === BUSQUEDA GREEDY ===
 procedure Greedy(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
 
 var
@@ -98,12 +107,97 @@ begin
 
   WriteLn('Peso final de la mochila: ', PesoActual);
   WriteLn('Beneficio final de la mochila: ', BeneficioActual);
-
-
 end;
 
 
-// MAIN
+
+// ===== FUERZA BRUTA =====
+procedure FuerzaBruta(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
+var
+  MejorBeneficio, BeneficioActual, PesoActual: Integer;
+  MejorCombinacion, CombinacionActual: array of Boolean;
+  i: Integer;
+
+  {
+    ProbarCombinacion es un procedimiento anidado recursivo
+    que explora todas las combinaciones posibles de objetos
+  }
+
+  procedure ProbarCombinacion(indice: Integer);
+  var
+    j: Integer; // Variable local para el bucle for dentro del procedimiento anidado
+  begin
+    // Si se han considerado todos los objetos, se evalúa la combinación actual
+    if indice > High(Objetos) then
+    begin
+
+      PesoActual := 0;
+      BeneficioActual := 0;
+      // Calcular el peso y beneficio totales de la combinación actual
+
+      for j := Low(Objetos) to High(Objetos) do
+      begin
+        if CombinacionActual[j] then
+
+        begin
+          PesoActual := PesoActual + Objetos[j].Peso;
+          BeneficioActual := BeneficioActual + Objetos[j].Beneficio;
+        end;
+      end;
+
+      {
+        Si la combinación actual aun cabe en la mochila y tiene mejor beneficio
+        que la anterior mejor se actualiza la mejor combinación
+      }
+
+      if (PesoActual <= MochilaMaxPeso) and (BeneficioActual > MejorBeneficio) then
+      begin
+        MejorBeneficio := BeneficioActual;
+        MejorCombinacion := Copy(CombinacionActual);
+      end;
+      Exit;
+    end;
+    // Explorar la combinación incluyendo el objeto actual
+    CombinacionActual[indice] := True;
+    ProbarCombinacion(indice + 1);
+    // Explorar la combinación excluyendo el objeto actual
+    CombinacionActual[indice] := False;
+    ProbarCombinacion(indice + 1);
+  end;
+
+begin
+  // Inicializar los arrays para la mejor combinación y la combinación actual
+  SetLength(MejorCombinacion, Length(Objetos));
+  SetLength(CombinacionActual, Length(Objetos));
+  MejorBeneficio := 0;
+  // Comenzar la exploración de combinaciones desde el primer objeto
+  ProbarCombinacion(Low(Objetos));
+
+  // Imprimir la mejor combinación encontrada
+  WriteLn('Mejor combinación de objetos para la mochila:');
+  for i := Low(Objetos) to High(Objetos) do
+    if MejorCombinacion[i] then
+      WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
+  WriteLn('Beneficio total: ', MejorBeneficio);
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== MAIN =====
 var
   opcionMenu: Integer; Objetos: array of TObjeto;
 
@@ -156,7 +250,7 @@ begin
 
   case opcionMenu of
     1: Greedy(MochilaMaxPeso, Objetos);
-    //2: FuerzaBruta;
+    2: FuerzaBruta(MochilaMaxPeso, Objetos);
     //3: Backtracking;
   else
     WriteLn('Opción no válida.');
