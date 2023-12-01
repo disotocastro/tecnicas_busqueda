@@ -31,15 +31,15 @@ begin
   WriteLn('Objetos registrados:');
   for i := Low(Pesos) to High(Pesos) do
   begin
-    WriteLn('Objeto[', i + 1, '] con peso: ', Pesos[i], ', y beneficio: ', Beneficios[i]);
+    WriteLn('Objeto[', i + 1, ']','    peso: ', Pesos[i],'    beneficio: ', Beneficios[i]);
+
   end;
 end;
 
 
+// OBJETO: Se crea un objeto que contiene ID, peso, beneficio y calidad/precio
 
-//       ===== METODOS DE BUSQUEDA =====
-//Se crea un objeto que contiene ID, peso, beneficio y calidad/precio}
-type
+ type
   TObjeto = record
     Peso: Integer;
     Beneficio: Integer;
@@ -72,8 +72,7 @@ begin
       end;
 end;
 
-
-// === BUSQUEDA GREEDY ===
+// =============== BUSQUEDA GREEDY ===============
 procedure Greedy(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
 
 var
@@ -81,6 +80,7 @@ var
   ObjetoSeleccionado: TObjeto;
 
 begin
+  WriteLn('=============== GREEDY ===============');
   // Calcular calidad precio para cada objeto
   for i := Low(Objetos) to High(Objetos) do
   begin
@@ -104,14 +104,12 @@ begin
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
     end;
   end;
-
   WriteLn('Peso final de la mochila: ', PesoActual);
   WriteLn('Beneficio final de la mochila: ', BeneficioActual);
 end;
 
 
-
-// ===== FUERZA BRUTA =====
+// =============== FUERZA BRUTA ===============
 procedure FuerzaBruta(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
 var
   MejorBeneficio, BeneficioActual, PesoActual: Integer;
@@ -174,11 +172,67 @@ begin
   ProbarCombinacion(Low(Objetos));
 
   // Imprimir la mejor combinación encontrada
+  WriteLn('=============== FUERZA BRUTA ===============');
   WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
-  WriteLn('Beneficio total: ', MejorBeneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
+end;
+
+
+
+
+
+// =============== BACKTRACKING ===============
+procedure Backtracking(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
+var
+  MejorBeneficio: Integer;
+  MejorCombinacion, CombinacionActual: array of Boolean;
+  i: Integer;
+
+  procedure Explorar(indice: Integer; PesoActual, BeneficioActual: Integer);
+  var
+    j: Integer;
+  begin
+    // Evaluar combinación actual cuando se hayan considerado todos los objetos
+    if indice > High(Objetos) then
+    begin
+      if BeneficioActual > MejorBeneficio then
+      begin
+        MejorBeneficio := BeneficioActual;
+        MejorCombinacion := Copy(CombinacionActual);
+      end;
+      Exit;
+    end;
+
+    // Explorar la combinación incluyendo el objeto actual
+    if PesoActual + Objetos[indice].Peso <= MochilaMaxPeso then
+    begin
+      CombinacionActual[indice] := True;
+      Explorar(indice + 1, PesoActual + Objetos[indice].Peso, BeneficioActual + Objetos[indice].Beneficio);
+    end;
+
+    // Explorar la combinación excluyendo el objeto actual
+    CombinacionActual[indice] := False;
+    Explorar(indice + 1, PesoActual, BeneficioActual);
+  end;
+
+begin
+  SetLength(MejorCombinacion, Length(Objetos));
+  SetLength(CombinacionActual, Length(Objetos));
+  MejorBeneficio := 0;
+
+  // Comenzar la exploración de combinaciones desde el primer objeto
+  Explorar(Low(Objetos), 0, 0);
+
+  // Imprimir la mejor combinación encontrada
+    WriteLn('=============== Backtracking ===============');
+  WriteLn('Mejor combinación de objetos para la mochila:');
+  for i := Low(Objetos) to High(Objetos) do
+    if MejorCombinacion[i] then
+      WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
 end;
 
 
@@ -194,10 +248,7 @@ end;
 
 
 
-
-
-
-// ===== MAIN =====
+// =============== MAIN ===============
 var
   opcionMenu: Integer; Objetos: array of TObjeto;
 
@@ -241,20 +292,27 @@ begin
   end;
 
 
-  // Imprimir el menu
-  WriteLn('Selecciona el algoritmo de búsqueda:');
-  WriteLn('1 - Greedy');
-  WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
-  WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
-  ReadLn(opcionMenu);
+  while True do
+  begin
+    // Imprimir el menú
+    WriteLn('');
+    WriteLn('Selecciona el algoritmo de búsqueda:');
+    WriteLn('1 - Greedy');
+    WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
+    WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
+    WriteLn('4 - Salir');
+    Write('Opción: ');
+    ReadLn(opcionMenu);
+    WriteLn('');
 
-  case opcionMenu of
-    1: Greedy(MochilaMaxPeso, Objetos);
-    2: FuerzaBruta(MochilaMaxPeso, Objetos);
-    //3: Backtracking;
-  else
-    WriteLn('Opción no válida.');
+    case opcionMenu of
+      1: Greedy(MochilaMaxPeso, Objetos);
+      2: FuerzaBruta(MochilaMaxPeso, Objetos);
+      3: Backtracking(MochilaMaxPeso, Objetos);
+      4: Break;  // Rompe el bucle while, saliendo del programa
+    else
+      WriteLn('Opción no válida.');
+    end;
   end;
-
   ReadLn;
 end.
