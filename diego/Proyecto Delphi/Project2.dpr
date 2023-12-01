@@ -241,12 +241,12 @@ end;
 
 
 
-
-
-
-
-
-
+    {
+      caso de prueba agregado visto en clase
+      pesomax: 15
+      peso objetos: 10 12 3 4 1 8 11 4 9 6
+      beneficio: 5 4 5 8 3 2 6 7 10 8
+    }
 
 // =============== MAIN ===============
 var

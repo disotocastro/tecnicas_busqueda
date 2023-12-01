@@ -31,7 +31,7 @@ begin
   WriteLn('Objetos registrados:');
   for i := Low(Pesos) to High(Pesos) do
   begin
-    WriteLn('Objeto[', i + 1, ']', Chr(9), 'peso: ', Pesos[i],'    beneficio: ', Beneficios[i]);
+    WriteLn('Objeto[', i + 1, ']','    peso: ', Pesos[i],'    beneficio: ', Beneficios[i]);
 
   end;
 end;
@@ -80,6 +80,7 @@ var
   ObjetoSeleccionado: TObjeto;
 
 begin
+  WriteLn('=============== GREEDY ===============');
   // Calcular calidad precio para cada objeto
   for i := Low(Objetos) to High(Objetos) do
   begin
@@ -103,7 +104,6 @@ begin
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
     end;
   end;
-
   WriteLn('Peso final de la mochila: ', PesoActual);
   WriteLn('Beneficio final de la mochila: ', BeneficioActual);
 end;
@@ -172,12 +172,14 @@ begin
   ProbarCombinacion(Low(Objetos));
 
   // Imprimir la mejor combinación encontrada
+  WriteLn('=============== FUERZA BRUTA ===============');
   WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
-  WriteLn('Beneficio total: ', MejorBeneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
 end;
+
 
 
 
@@ -225,11 +227,12 @@ begin
   Explorar(Low(Objetos), 0, 0);
 
   // Imprimir la mejor combinación encontrada
-  WriteLn('Mejor combinación de objetos para la mochila (Backtracking):');
+    WriteLn('=============== Backtracking ===============');
+  WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
-  WriteLn('Beneficio total: ', MejorBeneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
 end;
 
 
@@ -238,7 +241,12 @@ end;
 
 
 
-
+    {
+      caso de prueba agregado visto en clase
+      pesomax: 15
+      peso objetos: 10 12 3 4 1 8 11 4 9 6
+      beneficio: 5 4 5 8 3 2 6 7 10 8
+    }
 
 
 
@@ -292,13 +300,15 @@ begin
   while True do
   begin
     // Imprimir el menú
+    WriteLn('');
     WriteLn('Selecciona el algoritmo de búsqueda:');
     WriteLn('1 - Greedy');
     WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
     WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
     WriteLn('4 - Salir');
-    WriteLn('Opción: ');
+    Write('Opción: ');
     ReadLn(opcionMenu);
+    WriteLn('');
 
     case opcionMenu of
       1: Greedy(MochilaMaxPeso, Objetos);

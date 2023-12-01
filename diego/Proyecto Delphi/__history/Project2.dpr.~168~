@@ -80,6 +80,7 @@ var
   ObjetoSeleccionado: TObjeto;
 
 begin
+  WriteLn('=============== GREEDY ===============');
   // Calcular calidad precio para cada objeto
   for i := Low(Objetos) to High(Objetos) do
   begin
@@ -103,7 +104,6 @@ begin
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
     end;
   end;
-
   WriteLn('Peso final de la mochila: ', PesoActual);
   WriteLn('Beneficio final de la mochila: ', BeneficioActual);
 end;
@@ -172,12 +172,14 @@ begin
   ProbarCombinacion(Low(Objetos));
 
   // Imprimir la mejor combinación encontrada
+  WriteLn('=============== FUERZA BRUTA ===============');
   WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
-  WriteLn('Beneficio total: ', MejorBeneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
 end;
+
 
 
 
@@ -225,11 +227,12 @@ begin
   Explorar(Low(Objetos), 0, 0);
 
   // Imprimir la mejor combinación encontrada
-  WriteLn('Mejor combinación de objetos para la mochila (Backtracking):');
+    WriteLn('=============== Backtracking ===============');
+  WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
-  WriteLn('Beneficio total: ', MejorBeneficio);
+  WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
 end;
 
 
@@ -238,7 +241,14 @@ end;
 
 
 
+    {
+      caso de prueba agregado visto en clase
+      pesomax: 15
+      peso objetos: 10 12 3 4 1 8 11 4 9 6
+      beneficio: 5 4 5 8 3 2 6 7 10 8
+      
 
+    }
 
 
 
@@ -292,6 +302,7 @@ begin
   while True do
   begin
     // Imprimir el menú
+    WriteLn('');
     WriteLn('Selecciona el algoritmo de búsqueda:');
     WriteLn('1 - Greedy');
     WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
@@ -299,6 +310,7 @@ begin
     WriteLn('4 - Salir');
     Write('Opción: ');
     ReadLn(opcionMenu);
+    WriteLn('');
 
     case opcionMenu of
       1: Greedy(MochilaMaxPeso, Objetos);
