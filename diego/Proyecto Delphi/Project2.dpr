@@ -79,29 +79,39 @@ begin
   ReadLn;
 end;
 
+
+
+{ MENU ASIGNACION }
 procedure ProblemaAsignacion;
 begin
-  // Placeholder para la lógica de asignación 1 a 1
-  WriteLn('Problema de asignación 1 a 1 aún no implementado.');
+
+
+
 end;
 
+{ MENU DISTRIBUCION }
 procedure ProblemaDistribucion;
 begin
-  // Placeholder para la lógica de distribución de recursos
-  WriteLn('Problema de distribución de recursos aún no implementado.');
+
+
+
 end;
 
+{ MENU VENDEDOR }
 procedure ProblemaVendedor;
 begin
-  // Placeholder para la lógica del problema del vendedor
-  WriteLn('Problema del vendedor aún no implementado.');
+
+
+
+
 end;
 
-var
-  opcionMenu: Integer;
 
 
 { MENU PRINCIPAL }
+var
+  opcionMenu: Integer;
+
 begin
   repeat
     WriteLn('Selecciona el problema a resolver:');

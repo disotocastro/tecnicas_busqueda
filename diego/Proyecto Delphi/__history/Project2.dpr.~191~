@@ -1,22 +1,24 @@
-program MochilaGreedy;
+program Metodos_Busqueda;
 
 {$APPTYPE CONSOLE}
 
 uses
   SysUtils,
   Classes,
-  Unit1;
+  Mochila; // Asumiendo que todos los procedimientos y funciones se movieron aquí
 
-// Variables Globales
+
+{ MENU MOCHILA }
+procedure ProblemaMochila;
 var
   MochilaMaxPeso, i: Integer;
   peso, beneficio: array of Integer;
   Lista: TStringList;
   opcionMenu: Integer;
   Objetos: array of TObjeto;
-
 begin
   // Solicitar el peso máximo de la mochila
+  WriteLn('');
   Write('Ingresa el peso máximo de la mochila: ');
   Readln(MochilaMaxPeso);
 
@@ -75,5 +77,51 @@ begin
     end;
   end;
   ReadLn;
-end.
+end;
 
+procedure ProblemaAsignacion;
+begin
+  // Placeholder para la lógica de asignación 1 a 1
+  WriteLn('Problema de asignación 1 a 1 aún no implementado.');
+end;
+
+procedure ProblemaDistribucion;
+begin
+  // Placeholder para la lógica de distribución de recursos
+  WriteLn('Problema de distribución de recursos aún no implementado.');
+end;
+
+procedure ProblemaVendedor;
+begin
+  // Placeholder para la lógica del problema del vendedor
+  WriteLn('Problema del vendedor aún no implementado.');
+end;
+
+var
+  opcionMenu: Integer;
+
+
+{ MENU PRINCIPAL }
+begin
+  repeat
+    WriteLn('Selecciona el problema a resolver:');
+    WriteLn('1) Problema de asignación 1 a 1');
+    WriteLn('2) Problema de distribución de un recurso');
+    WriteLn('3) Problema de la mochila');
+    WriteLn('4) Problema del vendedor');
+    WriteLn('5) Salir');
+    Write('Opción: ');
+    ReadLn(opcionMenu);
+
+    case opcionMenu of
+      //1: ProblemaAsignacion;
+      //2: ProblemaDistribucion;
+      3: ProblemaMochila;
+      //4: ProblemaVendedor;
+      //5: WriteLn('Saliendo del programa...');
+    else
+      WriteLn('Opción no válida. Intente de nuevo.');
+    end;
+
+  until opcionMenu = 5;
+end.
