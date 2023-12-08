@@ -1,0 +1,307 @@
+unit Viajero;
+
+interface
+
+uses
+  Classes, SysUtils;
+
+procedure loadCities;
+procedure greedy;
+procedure exhaustiva;
+procedure branchAndBound;
+
+
+implementation
+
+var
+  ciudades: array of array of Integer;
+  citiesNumber: Integer;
+
+
+type
+    TEstado = record
+      contadorVisitados: Integer;
+      contadorDistancia: Integer;
+      ciudadActual: Integer;
+      visitados: array of boolean;
+      camino: array of Integer;
+    end;
+
+procedure loadCities;
+var
+  i, j: Integer;
+begin
+  Write('Ingrese el número de ciudades: ');
+  ReadLn(citiesNumber);
+
+  SetLength(ciudades, citiesNumber);
+  for i := 0 to citiesNumber - 1 do
+    SetLength(ciudades[i], citiesNumber);
+
+  WriteLn('Ingrese los valores de la matrizz (', citiesNumber, 'x', citiesNumber, '):');
+  for i := 0 to citiesNumber - 1 do
+  begin
+    for j := 0 to citiesNumber - 1 do
+    begin
+      Write('Ciudad[', i, ',', j, ']: ');
+      Read(ciudades[i, j]);
+    end;
+  end;
+
+  WriteLn('Matriz de ciudades ingresada:');
+  for i := 0 to citiesNumber - 1 do
+  begin
+    for j := 0 to citiesNumber - 1 do
+      Write(ciudades[i, j], ' ');
+    WriteLn;
+  end;
+end;
+
+
+
+
+procedure greedy;
+var
+  ciudadActual, contadorVisitados, destino, caminos, Temp, distancia, distanciaTotal: Integer;
+  visitados: array of boolean;
+  camino: array of integer;
+begin
+  SetLength(visitados, citiesNumber);
+  SetLength(camino, citiesNumber + 1);  // +1 para incluir el retorno al inicio
+  distanciaTotal := 0;
+
+  // Inicialización de variables
+  for destino := 0 to citiesNumber - 1 do
+  begin
+    visitados[destino] := False;
+  end;
+
+  // Inicialización de la primera ciudad
+  ciudadActual := 0;
+  contadorVisitados := 0;
+  visitados[ciudadActual] := True;
+  camino[contadorVisitados] := ciudadActual;
+
+  // Bucle principal para encontrar el vecino más cercano
+  while contadorVisitados < citiesNumber - 1 do
+  begin
+    distancia := MaxInt;
+    for destino := 0 to citiesNumber - 1 do
+    begin
+      if (not visitados[destino]) and (ciudades[ciudadActual][destino] < distancia) and (ciudades[ciudadActual][destino] <> 0) then
+      begin
+        distancia := ciudades[ciudadActual][destino];
+        Temp := destino;
+      end;
+    end;
+
+    distanciaTotal := distanciaTotal + distancia;
+    ciudadActual := Temp;
+    Inc(contadorVisitados);
+    visitados[ciudadActual] := True;
+    camino[contadorVisitados] := ciudadActual;
+  end;
+
+  // Añadir la distancia de regreso a la ciudad de origen al total
+  distanciaTotal := distanciaTotal + ciudades[ciudadActual][0];
+
+  // Añadir la ciudad de origen al final del camino para completar el ciclo
+  camino[citiesNumber] := 0;
+
+  WriteLn('EL CAMINO MAS CORTO ES');
+  for caminos := 0 to citiesNumber do
+  begin
+    Write(camino[caminos]);
+    if caminos < citiesNumber then
+      Write(' -> ');
+  end;
+
+  WriteLn;
+  WriteLn('Distancia total del recorrido: ', distanciaTotal);
+end;
+
+
+
+type
+    Tcamino = record
+            contadorVisitados, contadorDistancia, ciudadActual, mejorDistancia:Integer;
+            visitados: Array of boolean;
+            camino : Array of Integer
+end;
+
+function recursion_exhaustiva(recorrido: Tcamino): Tcamino;
+var
+  i: Integer;
+  temp: Tcamino;
+begin
+  recorrido.camino[recorrido.contadorVisitados] := recorrido.ciudadActual;
+  recorrido.visitados[recorrido.ciudadActual] := True;
+  Inc(recorrido.contadorVisitados);
+
+  // Si todas las ciudades han sido visitadas, verificar si esta ruta es mejor
+  if recorrido.contadorVisitados = citiesNumber then
+  begin
+    // Agregar la distancia de regreso a la ciudad de origen
+    recorrido.contadorDistancia := recorrido.contadorDistancia + ciudades[recorrido.ciudadActual][0];
+
+    if recorrido.contadorDistancia < recorrido.mejorDistancia then
+    begin
+      recorrido.mejorDistancia := recorrido.contadorDistancia;
+      Result := recorrido;
+    end;
+
+    // Restar la distancia añadida para la próxima iteración
+    recorrido.contadorDistancia := recorrido.contadorDistancia - ciudades[recorrido.ciudadActual][0];
+
+    Exit;
+  end;
+
+  // Explorar rutas no visitadas
+  for i := 0 to citiesNumber - 1 do
+  begin
+    if (not recorrido.visitados[i]) and (ciudades[recorrido.ciudadActual][i] <> 0) then
+    begin
+      temp := recorrido;
+      temp.ciudadActual := i;
+      temp.contadorDistancia := temp.contadorDistancia + ciudades[recorrido.ciudadActual][i];
+      temp := recursion_exhaustiva(temp);
+
+      // Actualizar si se encuentra una ruta mejor
+      if temp.mejorDistancia < recorrido.mejorDistancia then
+      begin
+        recorrido := temp;
+      end;
+    end;
+  end;
+
+  Result := recorrido;
+end;
+
+procedure exhaustiva;
+var
+  i: Integer;
+  recorrido, mejorCamino: Tcamino;
+begin
+  recorrido.contadorVisitados := 0;
+  recorrido.ciudadActual := 0;
+  recorrido.contadorDistancia := 0;
+  SetLength(recorrido.visitados, citiesNumber);
+  SetLength(recorrido.camino, citiesNumber);
+  recorrido.mejorDistancia := MaxInt;
+
+  for i := 0 to citiesNumber - 1 do
+  begin
+    recorrido.visitados[i] := False;
+    recorrido.camino[i] := 0;
+  end;
+
+  mejorCamino := recursion_exhaustiva(recorrido);
+
+  WriteLn('EL CAMINO MAS CORTO ES');
+  for i := 0 to citiesNumber - 1 do
+  begin
+    Write(mejorCamino.camino[i]);
+    if i < citiesNumber - 1 then
+      Write(' -> ');
+  end;
+  WriteLn(' con una distancia de ', mejorCamino.mejorDistancia);
+end;
+
+
+
+
+
+
+
+
+
+
+function lowerBound(estado: TEstado): Integer;
+var
+  lb, i: Integer;
+begin
+  lb := estado.contadorDistancia;
+  // Aquí se puede implementar un cálculo más sofisticado del lower bound si es necesario
+  for i := 0 to citiesNumber - 1 do
+  begin
+    if not estado.visitados[i] then
+      lb := lb + (ciudades[estado.ciudadActual][i] div 2); // Estimación simple
+  end;
+  Result := lb;
+end;
+
+procedure branchAndBoundRecursion(var mejorEstado: TEstado; estadoActual: TEstado);
+var
+  i, idx: Integer;
+  nuevoEstado: TEstado;
+begin
+  if estadoActual.contadorVisitados = citiesNumber then
+  begin
+    // Agregar la ciudad inicial para completar el ciclo
+    estadoActual.camino[estadoActual.contadorVisitados] := estadoActual.camino[0];
+    estadoActual.contadorDistancia := estadoActual.contadorDistancia + ciudades[estadoActual.ciudadActual][estadoActual.camino[0]];
+    if estadoActual.contadorDistancia < mejorEstado.contadorDistancia then
+    begin
+      mejorEstado := estadoActual;
+      // Asegurarse de que el camino se copie también
+      for idx := 0 to citiesNumber do
+        mejorEstado.camino[idx] := estadoActual.camino[idx];
+    end;
+    Exit;
+  end;
+
+  for i := 0 to citiesNumber - 1 do
+  begin
+    if (not estadoActual.visitados[i]) and (ciudades[estadoActual.ciudadActual][i] <> 0) then
+    begin
+      nuevoEstado := estadoActual;
+      nuevoEstado.ciudadActual := i;
+      nuevoEstado.contadorDistancia := nuevoEstado.contadorDistancia + ciudades[estadoActual.ciudadActual][i];
+      nuevoEstado.visitados[i] := True;
+      Inc(nuevoEstado.contadorVisitados);
+      nuevoEstado.camino[nuevoEstado.contadorVisitados - 1] := i; // Actualiza el camino con la ciudad actual
+
+      if lowerBound(nuevoEstado) < mejorEstado.contadorDistancia then
+        branchAndBoundRecursion(mejorEstado, nuevoEstado);
+    end;
+  end;
+end;
+
+procedure branchAndBound;
+var
+  i: Integer;
+  estadoInicial, mejorEstado: TEstado;
+begin
+  estadoInicial.contadorVisitados := 0;
+  estadoInicial.ciudadActual := 0;
+  estadoInicial.contadorDistancia := 0;
+  SetLength(estadoInicial.visitados, citiesNumber);
+  SetLength(estadoInicial.camino, citiesNumber + 1);
+  mejorEstado.contadorDistancia := MaxInt;
+  SetLength(mejorEstado.camino, citiesNumber + 1); // Inicializa el tamaño correcto para el camino
+
+
+
+  for i := 0 to citiesNumber - 1 do
+  begin
+    estadoInicial.visitados[i] := False;
+    estadoInicial.camino[i] := -1;
+  end;
+
+  branchAndBoundRecursion(mejorEstado, estadoInicial);
+
+
+  WriteLn('EL CAMINO MAS CORTO ES');
+  for i := 0 to citiesNumber - 1 do
+  begin
+    Write(mejorEstado.camino[i]);
+    if i < citiesNumber - 1 then
+      Write(' -> ');
+  end;
+  WriteLn(' con una distancia de ', mejorEstado.contadorDistancia);
+end;
+
+end.
+
+
+end.

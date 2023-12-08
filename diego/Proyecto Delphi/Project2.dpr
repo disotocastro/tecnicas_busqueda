@@ -1,11 +1,14 @@
-program Metodos_Busqueda;
+ program Metodos_Busqueda;
 
 {$APPTYPE CONSOLE}
 
 uses
   SysUtils,
   Classes,
-  Mochila; // Asumiendo que todos los procedimientos y funciones se movieron aquí
+  Mochila,
+  Viajero in 'Viajero.pas';
+
+// Asumiendo que todos los procedimientos y funciones se movieron aquí
 
 
 { MENU MOCHILA }
@@ -68,7 +71,7 @@ begin
     WriteLn('');
 
     case opcionMenu of
-      1: Greedy(MochilaMaxPeso, Objetos);
+//      1: Greedy(MochilaMaxPeso, Objetos);
       2: FuerzaBruta(MochilaMaxPeso, Objetos);
       3: Backtracking(MochilaMaxPeso, Objetos);
       4: Break;  // Rompe el bucle while, saliendo del programa
@@ -101,10 +104,36 @@ end;
 procedure ProblemaVendedor;
 begin
 
+var
+opcionMenu: Integer;
 
+while True do
+  begin
+    // Imprimir el menú
+    WriteLn('');
+    WriteLn('Selecciona el algoritmo de búsqueda:');
+    WriteLn('1 - Greedy');
+    WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
+    WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
+    WriteLn('4 - Salir');
+    Write('Opción: ');
+    ReadLn(opcionMenu);
+    WriteLn('');
 
+      loadCities;  // Carga las ciudades
+    case opcionMenu of
+      1: greedy;      // Ejecuta el algoritmo greedy
+      2: exhaustiva;  // Ejecuta la búsqueda exhaustiva
+      3: branchAndBound;
+      4: Break;  // Rompe el bucle while, saliendo del programa
+    else
+      WriteLn('Opción no válida.');
+    end;
+  end;
+  ReadLn;
 
 end;
+
 
 
 
@@ -127,7 +156,7 @@ begin
       //1: ProblemaAsignacion;
       //2: ProblemaDistribucion;
       3: ProblemaMochila;
-      //4: ProblemaVendedor;
+      4: ProblemaVendedor;
       //5: WriteLn('Saliendo del programa...');
     else
       WriteLn('Opción no válida. Intente de nuevo.');
