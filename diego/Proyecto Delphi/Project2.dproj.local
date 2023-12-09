@@ -1,12 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>2023/11/30 18:39:54.000.534,C:\Users\50660\Desktop\Project2.dproj=C:\Users\50660\Desktop\Proyecto Delphi\Project2.dproj</Transaction>
+    <Transaction>2023/11/30 18:39:54.000.534,C:\Users\50660\Desktop\Proyecto Delphi\Project2.dproj=C:\Users\50660\Desktop\Project2.dproj</Transaction>
     <Transaction>2023/12/01 17:11:52.000.813,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
     <Transaction>2023/12/01 17:12:02.000.014,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
     <Transaction>2023/12/01 17:12:38.000.042,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
     <Transaction>2023/12/01 17:14:26.000.569,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
-    <Transaction>2023/12/08 11:30:47.243,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
-    <Transaction>2023/12/08 11:31:03.224,C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Viajero.pas=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
+    <Transaction>2023/12/08 11:30:47.000.243,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
+    <Transaction>2023/12/08 11:31:03.000.224,C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Viajero.pas</Transaction>
+    <Transaction>2023/12/08 13:57:54.000.155,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
+    <Transaction>2023/12/08 13:58:16.000.674,C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Asignacion.pas=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
+    <Transaction>2023/12/08 14:03:50.000.852,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Mochila.pas</Transaction>
+    <Transaction>2023/12/08 14:45:18.000.220,=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas</Transaction>
+    <Transaction>2023/12/08 14:45:39.000.080,C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Unit1.pas=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Distribucion.pas</Transaction>
+    <Transaction>2023/12/08 14:45:59.000.532,C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Distribucion.pas=C:\Users\50660\Desktop\tecnicas_busqueda\diego\Proyecto Delphi\Distribu.pas</Transaction>
   </Transactions>
 </BorlandProject>

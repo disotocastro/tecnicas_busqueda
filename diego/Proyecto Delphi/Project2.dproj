@@ -90,6 +90,9 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Viajero.pas"/>
+        <DCCReference Include="Asignacion.pas"/>
+        <DCCReference Include="Mochila.pas"/>
+        <DCCReference Include="Distribu.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -6,7 +6,7 @@ uses
   Classes, SysUtils;
 
 procedure loadCities;
-procedure greedy;
+procedure greedy_vendedor;
 procedure exhaustiva;
 procedure branchAndBound;
 
@@ -62,7 +62,7 @@ begin
 end;
 
 // esta función implementa el algoritmo voraz para encontrar un camino corto
-procedure greedy;
+procedure greedy_vendedor;
 var
   ciudadActual, contadorVisitados, destino, caminos, Temp, distancia, distanciaTotal: Integer;
   visitados: array of boolean;

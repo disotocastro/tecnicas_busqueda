@@ -1,0 +1,250 @@
+unit Distribu;
+
+interface
+
+uses
+  System.SysUtils, Math;
+
+type
+  TTablaDistribucion = array of array of Integer;
+
+
+function LeerTablaDistribucion(N, M: Integer): TTablaDistribucion;
+procedure ImprimirTabla(const Tabla: TTablaDistribucion);
+procedure GreedyDistribucion(const Tabla: TTablaDistribucion; Recurso: Integer);
+procedure FuerzaBrutaDistribucion(const Tabla: TTablaDistribucion; RecursoTotal: Integer);
+procedure BranchAndBoundDistribucion(const Tabla: TTablaDistribucion; RecursoTotal: Integer);
+
+implementation
+
+// función para leer la tabla de distribución de tamaño N x M de la entrada del usuario
+function LeerTablaDistribucion(N, M: Integer): TTablaDistribucion;
+var
+  i, j: Integer;
+begin
+  // se ajusta el tamaño de la matriz dinámica para que tenga N filas y M columnas
+  SetLength(Result, N, M);
+
+  // se piden al usuario los valores de la matriz
+  WriteLn('Ingrese los valores de la matriz (', N, 'x', M , '):');
+  for i := 0 to N - 1 do
+  begin
+    for j := 0 to M - 1 do
+    begin
+      Write('Recurso ', i + 1, ', Lugar ', j + 1, ': ');
+      ReadLn(Result[i][j]);
+    end;
+  end;
+end;
+
+// procedimiento para imprimir la tabla de distribución
+procedure ImprimirTabla(const Tabla: TTablaDistribucion);
+var
+  i, j: Integer;
+begin
+  WriteLn('Matriz de Distribucion:');
+  // se recorre la matriz y se imprimen sus valores
+  for i := Low(Tabla) to High(Tabla) do
+  begin
+    Write('Recurso ', i + 1, ': ');
+    for j := Low(Tabla[i]) to High(Tabla[i]) do
+    begin
+      Write(Tabla[i][j]:4);
+    end;
+    WriteLn;
+  end;
+end;
+
+// procedimiento para el algoritmo Greedy
+procedure GreedyDistribucion(const Tabla: TTablaDistribucion; Recurso: Integer);
+var
+  lugar, recursoActual, beneficio, contadorRecursos, i, j: Integer;
+  asignado: array of array of boolean;
+  listo: array of boolean;
+begin
+  // inicialización de variables y matrices de control
+  SetLength(listo, Length(Tabla[0]));
+  SetLength(asignado, Length(Tabla));
+
+  // se inicializan los arrays
+  for i := 0 to High(Tabla) do
+  begin
+    SetLength(asignado[i], Length(Tabla[0]));
+    for j := 0 to High(Tabla[i]) do
+    begin
+      listo[j] := False;
+      asignado[i][j] := False;
+    end;
+  end;
+
+  // se inicia la lógica del algoritmo Greedy
+  beneficio := 0;
+  contadorRecursos := 0;
+
+  // mientras haya recursos disponibles se continúa con la asignación
+  while (contadorRecursos < Recurso) do
+  begin
+    recursoActual := -1;
+    lugar := -1;
+    // se busca la mejor opción de asignación de recursos
+    for i := 0 to High(Tabla) do
+    begin
+      for j := 0 to High(Tabla[i]) do
+      begin
+        if (not listo[j]) and ((contadorRecursos + i + 1) <= Recurso) and ((lugar = -1) or (Tabla[i][j] > Tabla[recursoActual][lugar])) then
+        begin
+          lugar := j;
+          recursoActual := i;
+        end;
+      end;
+    end;
+
+    // si se encuentra una opción válida, se asignan los recursos
+    if lugar <> -1 then
+    begin
+      contadorRecursos := contadorRecursos + recursoActual + 1;
+      asignado[recursoActual][lugar] := True;
+      listo[lugar] := True;
+      beneficio := beneficio + Tabla[recursoActual][lugar];
+    end
+    else
+      Break;
+  end;
+
+  // se imprime el resultado del algoritmo Greedy
+  WriteLn('Distribución Greedy:');
+  for i := 0 to High(asignado) do
+  begin
+    for j := 0 to High(asignado[i]) do
+    begin
+      if asignado[i][j] then
+      begin
+        WriteLn('Al lugar ', j + 1, ' se asignaron ', i + 1, ' recursos. Beneficio obtenido: ', Tabla[i][j]);
+      end;
+    end;
+  end;
+  WriteLn('Beneficio total: ', beneficio);
+end;
+
+// procedimiento para el algoritmo de Fuerza Bruta
+procedure FuerzaBrutaDistribucion(const Tabla: TTablaDistribucion; RecursoTotal: Integer);
+var
+  MejorGanancia: Integer;
+  MejorDistribucion, DistribucionActual: array of Integer;
+  NumLugares: Integer;
+
+  // procedimiento anidado para probar todas las combinaciones posibles de distribución de recursos
+  procedure ProbarDistribucion(indice: Integer; RecursosRestantes: Integer; GananciaAcumulada: Integer);
+  var
+    r: Integer;
+  begin
+    // si se han considerado todos los lugares, se verifica si la distribución actual es la mejor
+    if indice = NumLugares then
+    begin
+      if GananciaAcumulada > MejorGanancia then
+      begin
+        MejorGanancia := GananciaAcumulada;
+        MejorDistribucion := Copy(DistribucionActual);
+      end;
+      Exit;
+    end;
+
+    // se prueban todas las posibles asignaciones de recursos para el lugar actual
+    for r := 0 to Min(RecursosRestantes, High(Tabla)) do
+    begin
+      DistribucionActual[indice] := r;
+      if r <= High(Tabla) then
+        ProbarDistribucion(indice + 1, RecursosRestantes - r, GananciaAcumulada + Tabla[r][indice]);
+    end;
+  end;
+
+begin
+  // se inicializan las variables y se empieza el proceso de búsqueda
+  NumLugares := Length(Tabla[0]);
+  SetLength(MejorDistribucion, NumLugares);
+  SetLength(DistribucionActual, NumLugares);
+  MejorGanancia := 0;
+
+  ProbarDistribucion(0, RecursoTotal, 0);
+
+  // se imprime el resultado del algoritmo de Fuerza Bruta
+  WriteLn('Resultado de la distribución por Fuerza Bruta:');
+  for var i := 0 to High(MejorDistribucion) do
+  begin
+    WriteLn('En el lugar ', i + 1, ' se asignaron ', MejorDistribucion[i], ' recursos. Ganancia: ', Tabla[MejorDistribucion[i]][i]);
+  end;
+  WriteLn('Ganancia total: ', MejorGanancia);
+end;
+
+
+
+procedure BranchAndBoundDistribucion(const Tabla: TTablaDistribucion; RecursoTotal: Integer);
+var
+  MejorGanancia: Integer;
+  MejorDistribucion, DistribucionActual: array of Integer;
+  NumLugares: Integer;
+
+  function CalcularGananciaMaximaPosible(indice: Integer; RecursosRestantes: Integer): Integer;
+  var
+    r, GananciaMaxima, MaxRecurso: Integer;
+  begin
+    Result := 0;
+    for r := indice to NumLugares - 1 do
+    begin
+      MaxRecurso := Min(RecursosRestantes, High(Tabla));
+      GananciaMaxima := Tabla[MaxRecurso][r];
+      Result := Result + GananciaMaxima;
+      RecursosRestantes := RecursosRestantes - MaxRecurso;
+    end;
+  end;
+
+  procedure Buscar(indice: Integer; RecursosRestantes: Integer; GananciaAcumulada: Integer);
+  var
+    r: Integer;
+  begin
+    if indice = NumLugares then
+    begin
+      if GananciaAcumulada > MejorGanancia then
+      begin
+        MejorGanancia := GananciaAcumulada;
+        MejorDistribucion := Copy(DistribucionActual);
+      end;
+      Exit;
+    end;
+
+    for r := 0 to Min(RecursosRestantes, High(Tabla)) do
+    begin
+      if GananciaAcumulada + CalcularGananciaMaximaPosible(indice + 1, RecursosRestantes - r) >= MejorGanancia then
+      begin
+        DistribucionActual[indice] := r;
+        if r <= High(Tabla) then // Asegurarse de no exceder el número de filas
+          Buscar(indice + 1, RecursosRestantes - r, GananciaAcumulada + Tabla[r][indice]);
+      end;
+    end;
+  end;
+
+begin
+  NumLugares := Length(Tabla[0]);
+  SetLength(MejorDistribucion, NumLugares);
+  SetLength(DistribucionActual, NumLugares);
+  MejorGanancia := 0;
+
+  Buscar(0, RecursoTotal, 0);
+
+  // Imprime el resultado
+  WriteLn('Resultado de la distribución por Branch and Bound:');
+  for var i := 0 to High(MejorDistribucion) do
+  begin
+    WriteLn('En el lugar ', i + 1, ' se asignaron ', MejorDistribucion[i], ' recursos. Ganancia: ', Tabla[MejorDistribucion[i]][i]);
+  end;
+  WriteLn('Ganancia total: ', MejorGanancia);
+end;
+
+
+
+
+
+
+
+
+end.

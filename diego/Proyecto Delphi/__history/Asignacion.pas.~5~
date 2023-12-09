@@ -1,0 +1,53 @@
+unit Asignacion;
+
+interface
+
+uses
+  System.SysUtils;
+
+type
+  TTablaGanancias = array of array of Integer;
+
+// Exportar las funciones y procedimientos que serán accesibles desde otros archivos
+function LeerTablaGanancias(N: Integer): TTablaGanancias;
+procedure ImprimirTabla(const Tabla: TTablaGanancias);
+procedure GreedyAsignacion(const Tabla: TTablaGanancias);
+procedure FuerzaBruta(const Tabla: TTablaGanancias);
+procedure BranchAndBoundAsignacion(const Tabla: TTablaGanancias);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+implementation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end.

@@ -1,4 +1,4 @@
-unit Mochila;
+﻿unit Mochila;
 
 interface
 
@@ -116,71 +116,62 @@ procedure FuerzaBruta(MochilaMaxPeso: Integer; var Objetos: array of TObjeto);
 var
   MejorBeneficio, BeneficioActual, PesoActual: Integer;
   MejorCombinacion, CombinacionActual: array of Boolean;
-  i: Integer;
-
-  {
-    ProbarCombinacion es un procedimiento anidado recursivo
-    que explora todas las combinaciones posibles de objetos
-  }
+  i, TotalCombinaciones: Integer;
 
   procedure ProbarCombinacion(indice: Integer);
   var
-    j: Integer; // Variable local para el bucle for dentro del procedimiento anidado
+    j: Integer;
   begin
-    // Si se han considerado todos los objetos, se evalúa la combinación actual
     if indice > High(Objetos) then
     begin
-
       PesoActual := 0;
       BeneficioActual := 0;
-      // Calcular el peso y beneficio totales de la combinación actual
 
       for j := Low(Objetos) to High(Objetos) do
       begin
         if CombinacionActual[j] then
-
         begin
           PesoActual := PesoActual + Objetos[j].Peso;
           BeneficioActual := BeneficioActual + Objetos[j].Beneficio;
         end;
       end;
 
-      {
-        Si la combinación actual aun cabe en la mochila y tiene mejor beneficio
-        que la anterior mejor se actualiza la mejor combinación
-      }
-
       if (PesoActual <= MochilaMaxPeso) and (BeneficioActual > MejorBeneficio) then
       begin
         MejorBeneficio := BeneficioActual;
         MejorCombinacion := Copy(CombinacionActual);
       end;
+
+      // Incrementar el conteo de combinaciones
+      Inc(TotalCombinaciones);
+
       Exit;
     end;
-    // Explorar la combinación incluyendo el objeto actual
+
     CombinacionActual[indice] := True;
     ProbarCombinacion(indice + 1);
-    // Explorar la combinación excluyendo el objeto actual
+
     CombinacionActual[indice] := False;
     ProbarCombinacion(indice + 1);
   end;
 
 begin
-  // Inicializar los arrays para la mejor combinación y la combinación actual
   SetLength(MejorCombinacion, Length(Objetos));
   SetLength(CombinacionActual, Length(Objetos));
   MejorBeneficio := 0;
-  // Comenzar la exploración de combinaciones desde el primer objeto
+  TotalCombinaciones := 0; // Inicializa el contador de combinaciones
+
   ProbarCombinacion(Low(Objetos));
 
-  // Imprimir la mejor combinación encontrada
   WriteLn('=============== FUERZA BRUTA ===============');
   WriteLn('Mejor combinación de objetos para la mochila:');
   for i := Low(Objetos) to High(Objetos) do
     if MejorCombinacion[i] then
       WriteLn('Objeto[', Objetos[i].ID, '] con peso: ', Objetos[i].Peso, ', beneficio: ', Objetos[i].Beneficio);
   WriteLn('Beneficio final de la mochila: ', MejorBeneficio);
+  WriteLn('Total de combinaciones probadas: ', TotalCombinaciones);
 end;
+
 
 
 

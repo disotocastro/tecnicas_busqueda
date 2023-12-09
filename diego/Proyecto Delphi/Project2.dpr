@@ -5,8 +5,10 @@
 uses
   SysUtils,
   Classes,
-  Mochila,
-  Viajero in 'Viajero.pas';
+  Viajero in 'Viajero.pas',
+  Asignacion in 'Asignacion.pas',
+  Mochila in 'Mochila.pas',
+  Distribu in 'Distribu.pas';
 
 // Asumiendo que todos los procedimientos y funciones se movieron aquí
 
@@ -71,7 +73,7 @@ begin
     WriteLn('');
 
     case opcionMenu of
-//      1: Greedy(MochilaMaxPeso, Objetos);
+      1: Greedy(MochilaMaxPeso, Objetos);
       2: FuerzaBruta(MochilaMaxPeso, Objetos);
       3: Backtracking(MochilaMaxPeso, Objetos);
       4: Break;  // Rompe el bucle while, saliendo del programa
@@ -86,27 +88,10 @@ end;
 
 { MENU ASIGNACION }
 procedure ProblemaAsignacion;
-begin
-
-
-
-end;
-
-{ MENU DISTRIBUCION }
-procedure ProblemaDistribucion;
-begin
-
-
-
-end;
-
-{ MENU VENDEDOR }
-procedure ProblemaVendedor;
-begin
-
 var
-opcionMenu: Integer;
-
+  opcionMenu, N: Integer;
+  TablaGanancias: TTablaGanancias;
+begin
 while True do
   begin
     // Imprimir el menú
@@ -120,9 +105,96 @@ while True do
     ReadLn(opcionMenu);
     WriteLn('');
 
-      loadCities;  // Carga las ciudades
+    Write('Ingrese el tamaño N de la tabla de ganancias (N x N): ');
+    Readln(N);
+
+    TablaGanancias := LeerTablaGanancias(N);
+    ImprimirTabla_Asignacion(TablaGanancias);
+    Writeln;
+
+
     case opcionMenu of
-      1: greedy;      // Ejecuta el algoritmo greedy
+      1: GreedyAsignacion(TablaGanancias);
+      2: FuerzaBruta_Asignacion(TablaGanancias);
+      3: BranchAndBoundAsignacion(TablaGanancias);
+      4: Break;
+    else
+      WriteLn('Opción no válida.');
+    end;
+  end;
+  ReadLn;
+end;
+
+
+
+
+{ MENU DISTRIBUCION }
+procedure ProblemaDistribucion;
+var
+  opcionMenu: Integer;
+  TablaDistribucion: TTablaDistribucion;
+  numeroRecursos, numeroLugares: Integer;
+begin
+  while True do
+  begin
+    // Imprimir el menú
+    WriteLn('');
+    WriteLn('Selecciona el algoritmo de búsqueda:');
+    WriteLn('1 - Greedy');
+    WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
+    WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
+    WriteLn('4 - Salir');
+    Write('Opción: ');
+    ReadLn(opcionMenu);
+    WriteLn('');
+
+    // Cargar la distribución
+    Write('Ingrese el número de recursos: ');
+    ReadLn(numeroRecursos);
+    Write('Ingrese el número de lugares: ');
+    ReadLn(numeroLugares);
+    TablaDistribucion := LeerTablaDistribucion(numeroRecursos, numeroLugares);
+    ImprimirTabla(TablaDistribucion);
+
+    case opcionMenu of
+      1: GreedyDistribucion(TablaDistribucion, numeroRecursos);
+      2: FuerzaBrutaDistribucion(TablaDistribucion, numeroRecursos);
+      3: BranchAndBoundDistribucion(TablaDistribucion, numeroRecursos);
+      4: Break;
+    else
+      WriteLn('Opción no válida.');
+    end;
+  end;
+  ReadLn;
+end;
+
+
+
+
+
+
+{ MENU VENDEDOR }
+procedure ProblemaVendedor;
+var
+opcionMenu: Integer;
+
+begin
+while True do
+  begin
+    // Imprimir el menú
+    WriteLn('');
+    WriteLn('Selecciona el algoritmo de búsqueda:');
+    WriteLn('1 - Greedy');
+    WriteLn('2 - Fuerza bruta (Exhaustiva pura)');
+    WriteLn('3 - Backtracking (Búsqueda Exhaustiva con Ramificación y Acotamiento)');
+    WriteLn('4 - Salir');
+    Write('Opción: ');
+    ReadLn(opcionMenu);
+    WriteLn('');
+
+    loadCities;  // Carga las ciudades
+    case opcionMenu of
+      1: greedy_vendedor;      // Ejecuta el algoritmo greedy
       2: exhaustiva;  // Ejecuta la búsqueda exhaustiva
       3: branchAndBound;
       4: Break;  // Rompe el bucle while, saliendo del programa
@@ -131,10 +203,9 @@ while True do
     end;
   end;
   ReadLn;
+  WriteLn('');
 
 end;
-
-
 
 
 { MENU PRINCIPAL }
@@ -153,11 +224,11 @@ begin
     ReadLn(opcionMenu);
 
     case opcionMenu of
-      //1: ProblemaAsignacion;
-      //2: ProblemaDistribucion;
+      1: ProblemaAsignacion;
+      2: ProblemaDistribucion;
       3: ProblemaMochila;
       4: ProblemaVendedor;
-      //5: WriteLn('Saliendo del programa...');
+      5: WriteLn('Saliendo del programa...');
     else
       WriteLn('Opción no válida. Intente de nuevo.');
     end;
